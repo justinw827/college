@@ -1,0 +1,125 @@
+Ryan Heins
+Justin Wang
+
+pg. 286 exercise 6.1
+We noted in Section 6.1.1 that most binary arithmetic operators are left-
+associative in most programming languages. In Section 6.1.4, however, we
+also noted that most compilers are free to evaluate the operands of a binary
+operator in either order. Are these statements contradictory? Why or why
+not?
+These statements are not contradictory, since associativity does not directly mean operands have to be evaluated in the same order, so the compiler is free to optimize the code and evaluate it in the way that will result in the fastest code.
+
+pg. 287 exercise 6.7
+Is &(&i) ever valid in C? Explain
+Given an l value, the & operator returns an r value, so since (&i) is an r value, the outside & needs an l value, so this is not valid in C.
+
+pg. 287 exercise 6.9 (Be concise.)
+In Section 6.1.2 (“Orthogonality”), we noted that C uses = for assignment and == for equality testing. The language designers state: “Since assignment
+is about twice as frequent as equality testing in typical C programs, it’s ap-
+propriate that the operator be half as long” [KR88, p. 17]. What do you
+think of this rationale?
+	This statement comes off as almost trying to be humorous, but makes sense from a designers point of view. The actions that will be happening more frequently should in fact be made as simple and efficient as possible to keep compile and run time down, and to optimize compiling and user experience. This results in assignment being = and equality testing being ==.
+
+Evaluate following program fragment in C:
+int a = 0;      
+int b = (a++ || ++a) >= (a++ && ++a);
+printf( "%d %d", a, b );
+
+operands are evaluated left to right:
+
+int b = (a++||++a) >= (a++ && ++a);
+a = 0, b = ?
+int b = (0 || ++a) >= (a++ && ++a);
+a = 1(evaluated at 0 then incremented to 1), b = ?
+int b = (0 || 2) >= (a++ && ++a);
+a = 2, b = ?
+int b = (0 || 2) >= (2 && ++a);
+a = 3, b = ?
+int b = (0 || 1) >= (2 && 3);
+a = 4, b = ?
+int b = 1 >= (2 && 3);
+a = 4, b = ?
+int b = 1 >= 1
+a = 4, b = ?
+int b = 1
+a = 4, b = 1
+output: 4 1
+a = 4, b = 1
+
+     b. operands are evaluated right to left:
+
+int b = (a++ || ++a) >= (a++ && ++a);
+a = 0, b = ?
+int b = (a++ || 1) >= (a++ && ++a);
+a = 1, b = ?
+int b = (1 || 1) >= (a++ && ++a);
+a = 2, b = ?
+int b = (1 || 1) >= (2 && ++a);
+a = 3, b = ?
+int b = (1 || 1) >= (2 && 4);
+a = 4, b = ?
+int b = (1 || 1) >= 1;
+a = 4, b = ?
+int b = 1 >= 1;
+a = 4, b = ?
+int b = 1
+a = 4, b = 1
+output: 4 1
+a = 4, b = 1
+
+     5. 	i = 0;
+while (a[i++] != 0);
+
+for (i = 0; a[i] != 0; i++);
+ 
+Are these loops equivalent? Explain.
+	Yes these loops are equivalent, both first evaluate if a[0] is not equal tp  0 and then increment i to 1 and execute the loop and then continue.
+
+     6. Write a script using a number object 1 to build a list where the first element is 1 and the next elements are the product of n!.  The output should be
+
+Filename: q6.rb
+
+
+
+     7. Variation of  exercises 6.17 and 6.18.  Add two iterator methods to the Tree class in TreeModule.py. preorder() is an iterator that traverses the tree object in preorder and postorder() is an iterator that traverses the tree object in postorder. 
+
+Filename: TreeModule.py
+
+     8. Page 289 exercise 6.22 .  TreeModule.py contains a class definition of a binary tree. UsingTrees.py contains code to illustrate how to create and use Tree objects.  You can use "def prettyPrint(trees)" in UsingTrees to printout a collection of trees. .   A copy of section 2 of Finkel referred to in the problem is on shared Google Drive. )
+
+Filename: UsingTrees.py
+
+     9. Page 291 exercise 6.33
+Give an example in C in which an in-line subroutine may be significantly
+faster than a functionally equivalent macro. Give another example in which
+the macro is likely to be faster. (Hint: Think about applicative vs normal-
+order evaluation of arguments.)
+
+#define MY_FUNC(a) {int x = a + a * 2 - a;}
+inline int MY_FUNC(a) {a + a * 2 - a;}
+
+Assume ‘a’ is an expression. Then the argument is evaluated with applicative evaluation by the inline function. As a result, the function only has to compute ‘a’ once, making it faster than the macro. The macro uses normaorder evaluation meaning ‘a’ has to be recomputed for each successive instance.
+
+#define MY_NUM 42
+inline int MY_NUM() {return 42;} 
+
+The macro is faster in this case because the constant is just substituted, meanwhile the function has to be called and executed in the other case.
+
+
+    10. Page 311/12 CYU 2, 9, 10 
+
+What does it mean for a language to be strongly typed? Statically typed? What
+prevents, say, C from being strongly typed?
+
+A language is strongly typed if the application of any operation to any object that is not intended to support that operation is prohibited in a way the language implementation can enforce
+A language is statically typed if it’s both strongly typed and it’s possible to type check at compile time.
+Unions, non-converting type casts, subroutines with variable numbers of parameters, and the  interoperability of pointers and arrays all prevent C from being strongly typed (Scott, p 299).
+
+What is polymorphism? What distinguishes its parametric and subtype varieties? What are generics?
+
+Polymorphism refers to the idea of having data structures and subroutines work with values of multiple types. In parametric polymorphism the type is taken as a parameter, while in subtype varieties the code is designed in a way to work with some type T, and the programmer can later define additional extensions of T and the code will still work with these subtypes. Generics are explicit parametric polymorphism, or templates in C++. They are usually found in statically typed languages, and implemented at compile time (Scott, p 302).
+
+What is the difference between discrete and scalar types?
+
+Scalar types consist of enumeration types, integer types, and real types. Enumeration types and integer types can be further described as discrete types. 
+http://www.adaic.org/resources/add_content/standards/05rm/html/RM-3-5.html

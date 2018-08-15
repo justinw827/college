@@ -1,0 +1,152 @@
+Justin Wang
+
+1.	(1) <expr>   ::= <term> "+" <expr> | <term>
+
+ 	    <term>   ::= <factor> "*" <term> | <factor>
+
+ 	    <factor> ::= "(" <expr> ")" | <number>
+
+	    <number> ::= digit
+	
+	(2) The grammar is right recursive meaning it yields right associativity.
+
+2.	<expr>   ::= <sub> "+" <expr> | <sub>
+
+	<sub>	 ::= <term> "-" <sub> | <term>	
+
+ 	<term>   ::= <avg> "*" <term> | <avg>
+
+	<avg>	 ::= <factor> "@" <avg> | <factor>
+
+ 	<factor> ::= "(" <expr> ")" | <number>
+
+	<number> ::= digit
+
+3.	(a) <expr>
+		<sub> "+" <expr>
+		<term> "+" <sub> "-" <sub>
+		<avg> "+" <term> "-" <term>
+		<factor> "+" <avg> "-" <avg>
+		<number> "+" <factor> "-" <factor>
+		digit "+" <number> "-" <number>
+		1 "+" digit "-" digit
+		1 + 2 - 2
+
+	(b)	<expr>
+		<sub>
+		<term> - <sub>
+		<avg> - <term>
+		<factor> - <avg> * <term>
+		<number> - <factor> * <avg>
+		digit - <number> * <factor>
+		2 - digit * <number>
+		2 - 3 * digit
+		2 - 3 * 5
+
+	(c)	<expr>
+		<sub>
+		<term> - <sub>
+		<avg> - <term>
+		<factor> - <avg>
+		<number> - <factor> @ <avg>
+		digit - <number> @ <factor>
+		10 - digit @ <number>
+		10 - 5 @ digit
+		10 -5 @ 2
+
+	(d)	<expr>
+		<sub>
+		<term> - <sub>
+		<avg> - <term> - <sub>
+		<factor> - <avg> - <term>
+		<number> - <factor> - <avg>
+		digit - <number> - <factor>
+		10 - digit - <number>
+		10 - 7 - digit
+		10 - 7 - 2
+
+4. File name: arith1.c
+
+5.	(1)	Using EBNF
+		<expr>	 ::= <term> {"+" <term>} | <term>
+
+		<term>	 ::= <factor> {"*" <factor>} | <factor>
+
+		<factor> ::= "(" <expr> ")" | <number>
+
+		<number> ::= digit
+
+	(2) The grammar is right recursive meaning it yields right associativity.
+
+6.	<expr>   ::= <sub> {"+" <sub>} | <sub>
+
+	<sub>	 ::= <term> {"-" <term>} | <term>	
+
+ 	<term>   ::= <avg> {"*" <avg>} | <avg>
+
+	<avg>	 ::= <factor> {"@" <factor>} | <factor>
+
+ 	<factor> ::= "(" <expr> ")" | <number>
+
+	<number> ::= digit
+
+7.	(a)	<expr>
+		<sub> {+ <sub>}
+		<term> + <term> {- <term>}
+		<avg> + <avg> - <avg>
+		<factor> + <factor> - <factor>
+		<number> + <number> - <number>
+		digit + digit - digit
+		1 + 2 - 2
+	
+	(b)	<expr>
+		<sub>
+		<term> {- <term>}
+		<avg> - <avg> {* <avg>}
+		<factor> - <factor> * <factor>
+		<number> - <number> * <number>
+		digit - digit * digit
+		2 - 3 * 5
+
+	(c)	<expr>
+		<sub>
+		<term> {- <term>}
+		<avg> - <avg>
+		<factor> - <factor> {@ <factor>}
+		<number> - <number> @ <number>
+		digit - digit @ digit
+		10 - 5 @ 2 
+
+	(d)	<expr>
+		<sub>
+		<term> {- <term>}
+		<avg> - <avg> {- <term>}
+		<factor> - <factor> - <avg>
+		<number> - <number> - <factor>
+		digit - digit - <number>
+		10 - 7 - digit
+		10 - 7 - 2
+
+8. File name: arith2.c
+
+9.	(1) ^(_|[a-zA-Z])(\w)*
+	(2) ^(")([^"]|(\\"))*(")$
+	(3) ^[a]*(b[a]*b[a]*)*$
+	(4) \b[ab]*c(([ab]*c){2})*[ab]*\b
+
+10	(1) They are a data type with two possible values, true and false. It was intended to represent the truth values of logic and Boolean algebra.
+	(2) They both exist because bool wasn't reserved prior to C99, so the _Bool keyword was used.
+	(3) If you want the identifier 'bool' to be reserved then you hve to include the header stdbool.h
+
+11.	Also known as a directive. It is a language construct that specifies how a compiler, or translator, should process its input. Pramas are not a part of the programming language. They processed by the scanner because they are used by the compiler, but not the parser.
+	A possible trade off of providing pragmas is adding complexity to the scanner, and possible complicating the semantics of the program.
+
+12.	(a) ^^zwx+y
+	(b) w+x+*yz
+	(c) *wx*(y^z)
+	(d) /*wxy*z
+
+13	(a) zwx^^y+
+	(b) wx+yz*+
+	(c) wx*yz^*
+	(d) wx*y/z*

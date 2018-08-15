@@ -1,0 +1,80 @@
+Justin Wang
+CS471 Assignment 1
+
+1. Answered during lab
+
+2. 
+	.file	"gcd.c"
+	.text
+	.globl	gcdI
+	.type	gcdI, @function
+gcdI:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	[creation of stack frame]
+	.cfi_def_cfa_register 6	["		       "]
+	movl	%edi, -4(%rbp)	["		       "]
+	movl	%esi, -8(%rbp)	["		       "]
+	jmp	.L2
+.L4:
+	movl	-4(%rbp), %eax
+	cmpl	-8(%rbp), %eax	[if (i > j)]
+	jle	.L3		[jump to else statement if i < j]
+	movl	-8(%rbp), %eax	[i = i-j]
+	subl	%eax, -4(%rbp)	["     "]
+	jmp	.L2
+.L3:
+	movl	-4(%rbp), %eax	[i = j-i] 
+	subl	%eax, -8(%rbp)	["     "]
+.L2:
+	movl	-4(%rbp), %eax	[while loop check]
+	cmpl	-8(%rbp), %eax	["		"]
+	jne	.L4		["		"]
+	movl	-4(%rbp), %eax	[get return value]
+	popq	%rbp		[   and return   ]
+	.cfi_def_cfa 7, 8	["		"]
+	ret			["		"]
+	.cfi_endproc		[exit function]
+.LFE0:
+	.size	gcdI, .-gcdI
+	.ident	"GCC: (Debian 6.3.0-18) 6.3.0 20170516"
+	.section	.note.GNU-stack,"",@progbits
+
+3. gcdM() gives a floating point exception. You can fix it by casting the variables to int. Using modulus should be faster in most cases 
+compared to only subtracting one variable from the other unless the values of i and j are very close.
+
+4. 	(1) File name: gcd_full.c
+	(2) gcdI() - O(log(n))	gcdF() - O(log(max(m, n))
+	(3) A recursive definition is easier to understand, but will use up more memory, while an iterative implementation may be a little 
+	harder to understand but more resource efficient
+
+5.	(1) File name: gcd_full.py
+	(2) File name: gcd_full.rb
+
+6. The limit of the size of integers is 2147483647. If there is an arithmetic overflow the result will wrap around the max int size. A program
+cannot be used on a machine/compiler where the max int size is smaller than the machine/compiler the program was originally written on, or 
+you run the risk of an arithmetic overflow. The same holds true for Java. In python, integers have arbitrary precision. Thus, the size of an
+integer is only iimited by the amount of available memory. For Ada, an exception will be raised if the result of a computation is out of range.
+
+7.	(a) Not closing a comment, i.e. /*
+	(b) Missing semicolon at end of line
+	(c) if (a = b) Where b wasn't declared yet.
+	(d) if (a = b) Where b is a user input and it's type isn't what is expected.
+	(e) if (1 == 2) {
+		printf("This is never reached");
+	    }
+
+8. Every programming language is well suited for different tasks, so a langauge can be more powerful than another language in one case, but not
+not for another task. Therefore the statement is false because no language is the most powerful for every task.
+
+9.	(a) 2
+	(b) 4
+	(c) The largest Ackermann number that could be computed in a reasonable amount of time was 65533 with m=4, n=1 or m=5, n=0.
+		File name: ack.c
+	(d) The largest Ackermann number for my program was 509 before a runtime error was raised. RuntimeError: maximum recursion depth exceeded
+		File name: ack.py
+	(e) The largest Ackermann number I got was 8189 before I got a SystemStackError, stack level too deep.
+		File name: ack.rb

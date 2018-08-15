@@ -1,0 +1,67 @@
+<project name="dijkstras" default="compile_all" basedir="../../..">
+
+  <property name="BUILD.compiler"       value="modern"/>
+  <property name="src"                  value="jwang138_p4/dijkstras/src"/>
+  <property name="BUILD"                value="${src}/BUILD"/>
+  <property name="classes"              value="${BUILD}/classes"/>
+  <property name="javadocs" 				value="${BUILD}/javadocs" />
+
+  <target name="all" depends="compile_all"/>
+
+  <target name="compile_all"
+          depends="files"/>
+
+  <target name="clean">
+       <delete dir="${BUILD}"/>
+	   <delete dir="${javadocs}"/>
+	   <delete file="jwang138_p4.tar.gz"/>
+  </target>
+
+  <!-- Prepare target directories -->
+  <target name="prepare">
+        <mkdir dir="${BUILD}"/>
+        <mkdir dir="${classes}"/>
+		<mkdir dir="${javadocs}"/>
+  </target>
+
+ <target name="jar">
+        <mkdir dir="${BUILD}/jar"/>
+        <jar destfile="${BUILD}/jar/dijkstras.jar" basedir="${BUILD}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="files.driver.Driver"/>
+            </manifest>
+        </jar>
+    </target>
+
+  <!-- ** means all subdirectories as well -->
+  <!-- * means all files in the current directory -->
+  <!-- for just java files use *.java -->
+
+  <target name="files" depends="prepare">
+    <javac includeantruntime="false" srcdir="${src}"
+	        includes="files/**"
+           excludes="**/package.html"
+           destdir="${classes}"
+           classpath="${classes}"
+           debug="on"
+           optimize="on"
+           deprecation="off"/>
+  </target>
+
+<target name="run" depends="jar">
+        <java jar="${BUILD}/jar/dijkstras.jar"  
+          fork="true">
+        </java>
+    </target>
+	
+<target name="javadocs" depends="prepare">
+		<javadoc sourcepath="${src}" destdir="${javadocs}"/>
+	</target>
+	
+<target name="tar" depends="clean">
+		<tar destfile="jwang138_p4.tar" basedir="${basedir}"/>
+		<gzip destfile="jwang138_p4.tar.gz" src="jwang138_p4.tar"/>
+		<delete file="jwang138_p4.tar"/>
+	</target>
+
+</project>

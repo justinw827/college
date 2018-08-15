@@ -1,0 +1,175 @@
+Ryan Heins
+Justin Wang
+
+Page 421 (chapter 9) CYU 11,12
+	How does an in-line subroutine differ from a macro?
+
+The size of the code in an inline subroutine is  bigger because the subroutine body is in every call site. Also inline subroutines are type checked, but macros aren’t type checked. Additionally, in-line expansion usually isn’t an option in recursive subroutines general case (Scott, p. 420).
+
+	Under what circumstances is it desirable to expand a subroutine in-line?
+
+A compiler will expand a subroutine in-line if it believes it will result in better code. For example, in the fringe code for a binary tree from the book, if the the nested invocations are made into a subroutine call, half the dynamic calls can be eliminated at run time (Scott, p. 420).
+
+Page 440 CYU 19
+What is an r-value reference? Why might it be useful?	
+	
+An r-value reference lets you pass an argument by reference when it would usually be considered an r-value. It would be useful if you’re trying to transfer the state of a temporary object to another object in a copy constructor, but you don’t want to create the copy and immediately destroy the original object (Scott, p. 430). 
+
+Page 461 CYU 36
+What is the difference between a coroutine and a thread?
+
+Threads are easier to use because you don’t need to use explicit transfer operations. They also offer a lot of functionality with only a small increase in implementation complexity. Coroutines are less common as a user level programming abstraction, but they can be used to implement threads (Scott, p. 451).
+
+Page 461 CYU 43
+	Explain the appeal of anonymous delegates (C#) and anonymous inner classes
+(Java) for handling events.
+
+They allow handers to be expressed more succinctly. In the case of anonymous inner classes, multiple definitions are embedded in one call (Scott, p. 460).
+
+Page 463 exercise 9.4
+
+	
+
+Consider the following (erroneous) program in C:
+void foo() {
+int i;
+printf("%d ", i++);
+}
+
+int main() {
+int j;
+for (j = 1; j <= 10; j++) foo();
+}
+Local variable i in subroutine foo is never initialized. On many systems,
+however, the program will display repeatable behavior, printing 0 1 2 3 4
+5 6 7 8 9. Suggest an explanation. Also explain why the behavior on other
+systems might be different, or nondeterministic.
+
+	The behavior may be different on different systems due to different calling sequences and stack
+layouts. In some systems, calling foo() repeatedly in the same function or same main will leave its
+reference on the stack, and thus its value registers will be available after the call, allowing the i variable to be incremented in a way.
+	
+
+page 465 exercise 9.15
+	Consider the following declaration in C:
+		
+double(*foo(double (*)(double, double[]), double)) (double, ...);
+	
+Describe in English the type of foo.
+
+foo is a function that takes a pointer to a function, which takes a double and a pointer to a double (array of doubles) and returns a double, and a double. foo also returns a pointer to a function with parameters double and anything that returns a double.
+
+Source: https://stackoverflow.com/questions/19460946/meaning-of-this-complex-declaration
+
+Consider the following function/macro definition in C:
+#define SQUARE(x) x*x
+int squaref (int x) {
+  		return x * x;
+}
+Assume a = 5.
+What is the result of the invocation of squaref(a) ? (Assume pass by value semantics.)
+	squaref(a) = 25
+
+What is the computed result  of SQUARE(a)?   (Macro expansion.)
+	SQUARE(a) = 25
+
+Give an example where squaref(x) and SQUARE(x) compute different values.
+	The function and macro compute different values if you were to run SQUARE(a+1) and
+squaref(a+1) for example. Since the square macro does not have any parentheses, a + 1 will
+mess up the order of operations, resulting in the answer to be 11, because it is simply
+replacing the macro with a + 1 * a + 1, or 5 + 1 * 5 + 1, while the square function returns 36,
+or 6 * 6.
+
+Consider the following code snippet in C-like syntax:
+
+int a[3];
+
+int runit(){
+   i = 1;
+   a[0] = 2;
+   a[1] = 1;
+   a[2] = 0;
+   mys(i,a[i]);
+   print(i, a[0], a[1], a[2]);
+   mys(a[1],a[i]);
+   print(i, a[0], a[1], a[2]);
+   return 0;
+}
+void mys(int x, int y){
+   x = x + y;
+   y = x - y;
+   x = x - y;
+}
+What is the printout of runit()  assuming each of the following parameter-passing
+mechanisms.  Show how you determined the answer.   There may be more than one
+correct answer.
+By value.
+	1 2 1 0
+	1 2 1 0 ? nothing is changed, the values if i and a[i] are passed in but not changed since its
+only a copy of the value (Scott, p. 457).
+
+By reference.
+	1 2 1 0
+1 2 0 0 ? in the first line of output, the values are the same but technically the address that
+point to the values have been swapped, and in the second line, passing in a[1] to be swapped
+with a[1] causes them both to be set to 0, so a[1] = 0 in the end. (Scott, p. 457t).
+
+By value-result.
+	1 2 1 0
+1 2 0 0 ? these results are the same as pass by reference, because the values computed are
+being printed after the function mys returns, of something global was accessed in the function
+mys, its changes wouldn't be seen until assignment back to the address when the function
+returns (Scott, p.458).
+
+By macro expansion.
+	1 2 1 0	
+1 2 0 0 ? macro expansion would just be like placing the function body in place of wherever
+it was called, so the second mys call tries to swap the same value, which when subtracting
+from itself in the second step would get 0.
+
+By name.
+	1 2 1 0
+	1 2 0 0 ? pass by name can change the value being referenced, but not change the object it
+points to, which isn’t being done in this case, so this would be same as pass by reference in
+this case (Scott, p. 459).
+
+Page 526 exercise 10.14
+	Compare Java final methods with C++ nonvirtual methods. How are they the same? How are they
+different?
+
+Java does not let you override final methods in inherited classes, but C++ non-virtual functions do not
+override anything(dispatched(Jave) vs non-dispatched(C++)). Both prevent you from overriding a
+final / non-virtual method in a parent class.
+
+Page 527 exercise 10.16
+	What happens to the implementation of a class if we redefine a data member? For example, suppose
+we have 
+
+class foo {
+public:
+int a;
+char *b;
+};
+...
+class bar : public foo {
+public:
+float c;
+int b;
+};
+Does the representation of a bar object contain one b field or two? If two, are both accessible, or only
+one? Under what circumstances?
+
+Redefining a data member creates two b fields, since char *b is public and can be seen by bar, but
+since it is non-virtual, if you were to implement these classes in use the compiler chooses which b to
+access at compile time, which could lead to unintentional errors, since they are different types.
+
+
+Page 527 exercise 10.20. In addition, explain why this isn't an issue for Java.
+	If foo is an abstract class in a C++ program, why is it acceptable to declare variables of type foo*, but
+not of type foo?
+
+You don’t directly initialize abstract classes as you normally would with other classes, so a pointer of
+the type allows you to point to instances of classes that might inherit foo so that you can use them
+
+
+

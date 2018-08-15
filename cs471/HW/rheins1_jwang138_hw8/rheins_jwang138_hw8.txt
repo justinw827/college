@@ -1,0 +1,125 @@
+Ryan Heins
+Justin Wang
+
+CS471 Homework 8
+
+1. What is unification? What is its role in ML?
+
+Unification refers to taking two types and combining what is known about both to possibly create a more detailed description of their common type (Scott, p 330). It’s used for type inferences, and is a big part of the computational model (Scott, p 331).
+
+2. Explain the distinction between implicit and explicit parametric polymorphism. What are their comparative advantages?
+
+Implicit parametric polymorphism refers to the presence of an extra, implicit parameter in a language, which avoids the need for run-time checking and limits the delay of error reporting (Scott, p. 332).
+Explicit parametric polymorphism lets the programmer specify type parameters when a  subroutine or class is declared, which is then used by the compiler to do static type checking (Scott, p. 333).
+
+3. Why will C# accept int as a generic argument, but Java won’t?
+
+C# was built while keeping generics in mind, meaning a lot of support was added for generics. On the other hand Java was built focusing more on backwards compatibility, so generic argument support wasn’t prioritized (Scott, p 339). 
+
+4. Here are some type and variable declarations in C syntax:
+typedef char* String1;
+typedef char* String2:
+
+String1 a;
+String2 b, c;
+String2 d;
+
+State which variables are type equivalent under (a) structural equivalence, (b) strict name equivalence, and (c) the actual C equivalence algorithm.
+
+(a) All of the variables are structurally equivalent. They’re all type char*.
+(b) a and d are equivalent and b and c are equivalent under strict name equivalence.
+(c) All variables are equivalent because C uses structural equivalence, except for in structs.	
+
+5. Given the following C++ declaration,
+
+double* dp = new double(3);
+void* vp;
+int* ip;
+
+which of the following assignments does the compiler complain about?
+
+vp = dp;
+dp = vp;
+ip = dp;
+dp = ip;
+ip = vp;
+
+ip = (int*) vp;
+ip = static_cast<int*>(vp);
+ip = static_cast<int*>(dp);
+ip = reinterpret_cast<int*>(dp);
+
+The compiler complains about the following assignments:
+
+dp = vp;
+ip = dp;
+dp = ip
+ip = vp;
+ip = static_cast<int*>(dp);
+
+Briefly explain the behavior of the compiler.  Will *ip ever have the value 3 after one of the assignments to ip ?
+
+vp cannot be assigned to dp or ip because a void* does not have as much information as an int* or double*. The same concept applies to trying to assign dp to ip and ip to dp. The information contained in a double* vs. an int* varies, thus cannot be assigned to one another.
+The pointer *ip will never have the value 3. reinterpret_cast will only ensure the original value is retained when a pointer is casted to a different type then back to the original type.  
+
+Citation:
+http://en.cppreference.com/w/cpp/language/reinterpret_cast (#7)
+
+
+6. page 346 exercise 7.17
+
+The compiler would give a static semantic error because the function print_all definition is written to take a list of foo pointers, and LB is a list of bar pointers, pointers to a different class. If this was allowed to execute, the print_all would be accessing a bar class thinking it was pointing to a foo class.
+
+7. page 346 exercise 7.18
+
+In Bjarne Stroustrup’s comparison, note he says templates are a ‘clever’ macro. That is
+because macros are simply text substitutions, and templates incorporate more than that,
+making them ‘clever’ as he says. Macros are processed before compilation, so compile
+errors would just return the expanded macro. Templates have type checking while
+macros don’t.
+
+8. page 358 CYU 1 : What are struct tags in C? How are they related to type names? How did they change in C++?
+
+In C, struct tags are related data of different types that can be stored and manipulated together(Scott, 351). But they are not exactly type names(Scott, 353). They have seperate namespaces so they would have to get declared 
+‘typedef struct element element_t’
+In C++ they changed where structs can be used as a type name, it performs the typedef implicitly(Scott, p. 353). 
+
+9. page 405 exercise 8.12 : Consider the following C declaration, compiled on a 64-bit x86 machine:
+
+struct {
+int n;
+char c;
+} A[10][10];
+
+If the address of A[0][0] is 1000 (decimal), what is the address of A[3][7]?
+Assuming size of struct is 5 bytes (4 for int, 1 for char), and
+assuming contiguous org. with row major order, the address of A[3][7] is 1185,
+			       with column major order, the address of A[3][7] is 1365.
+
+10. page 407 exercise 8.16 (Reading C type declarations) : Explain the meaning of the following C declarations:
+double *a[n];		? 	Array of n pointers to doubles
+double (*b)[n];		? 	Pointer to array of n doubles
+double (*c[n])();	? 	Array of n pointers to functions that return doubles
+double (*d())[n];	? 	Function that returns pointer to array of n doubles
+
+11. Suppose this C++ code
+
+const int k = ???; // you need to figure out the value of ???
+int * i = 0;
+struct A {
+    int x[k];
+};
+A* a = 0;
+printf( "%d  %d  %d %d  %d  %d  ",i+1, i+k, k, a+k, &(a[9]), &(a[9]) - (a+1)  );
+
+outputs the values for the first two expressions
+ 	4  12
+What are its remaining outputs?  Briefly explain how the output is obtained.  (Hint: pay attention to coercion.)
+
+	Remaining outputs: 
+i + 1 = 4, pointer arithmetic means the int size 4 of i was multiplied by the 1 and added to the address of i which is 0 [0 + (1 * 4)]
+i + k = 12, by the same logic, 12 = [0 + (k * 4)] so k must equal 3
+k = 3 see above one
+a + k = 36, 0+(3 * (3 * 4)) address of a(0) + ( k * (number of k’s * size of k (int = 4))
+&(a[9]) = 108, array of 9 structs of arrays of k = 3 ints, so 9 * (3 * 4)
+&(a[9]) - (a+1) = 104, difference between memory is 108 - 4 (a+1 = 0 + (1 *4))
